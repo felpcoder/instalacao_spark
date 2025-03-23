@@ -31,6 +31,7 @@ echo "Gravando Variáveis de Ambiente"
 echo 'export SPARK_HOME=/opt/spark' >> ~/.bashrc
 echo 'export PATH=$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH' >> ~/.bashrc
 echo 'export PYSPARK_PYTHON=/usr/bin/python3' >> ~/.bashrc
+echo 'export SPARK_LOCAL_HOSTNAME=$(hostname)' >> ~/.bashrc
 
 source ~/.bashrc
 
