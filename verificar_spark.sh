@@ -61,16 +61,27 @@ sleep 3
 echo "Criando teste_spark.py..."
 cat << EOF > teste_spark.py
 from pyspark.sql import SparkSession
-import time
 
-spark = SparkSession.builder.appName("VerificacaoCluster").getOrCreate()
+spark = (
+    SparkSession.builder
+    .appName("DeltaExample")
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+    .getOrCreate()
+)
+
 df = spark.range(5)
 df.show()
-print('Arquivo executado com sucesso!')
-spark.stop()
+df.write.format("delta").save("./saida_delta")
+
 EOF
 
 echo "Executando spark-submit no modo cluster..."
-spark-submit --master spark://localhost:7077 teste_spark.py
+
+spark-submit --master spark://localhost:7077\
+  --packages io.delta:delta-spark_2.12:3.1.0 \
+  --conf "spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension" \
+  --conf "spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog" \
+  teste_spark.py
 
 echo "Finalizado. Verifique a interface web em http://localhost:8080"
