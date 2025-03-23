@@ -66,6 +66,7 @@ import time
 spark = SparkSession.builder.appName("VerificacaoCluster").getOrCreate()
 df = spark.range(5)
 df.show()
+print('Arquivo executado com sucesso!')
 spark.stop()
 EOF
 
